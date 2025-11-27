@@ -61,7 +61,7 @@ jobs:
         # Perintah Sakti MLflow Build Docker
         # -m: Lokasi model (runs:/id/nama_folder_model)
         # -n: Nama image yang mau dibuat (username/repo:tag)
-        mlflow models build-docker -m "runs:/$RUN_ID/model_random_forest" -n "${{ secrets.DOCKER_USERNAME }}/heart-failure-model:latest"
+        mlflow models build-docker -m "runs:/$RUN_ID/model" -n "${{ secrets.DOCKER_USERNAME }}/heart-failure-model:latest"
 
     # 7. Push ke Docker Hub
     - name: Push Image to Docker Hub
