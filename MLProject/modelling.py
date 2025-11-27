@@ -17,7 +17,7 @@ try:
     dagshub.init(repo_owner='farhanhanifazhary', repo_name='Heart-Failure-Tracking', mlflow=True)
     
     print("💾 Loading Data...")
-    df = pd.read_csv('heart_failure_clean.csv')
+    df = pd.read_csv('heart_failure_clinical_records_dataset_preprocessing.csv')
     
     X = df.drop('DEATH_EVENT', axis=1)
     y = df['DEATH_EVENT']
