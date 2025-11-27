@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - main
-    paths:
-      - 'Workflow-CI/**' # Hanya jalan jika folder ini berubah
 
 jobs:
   build-docker-mlflow:
