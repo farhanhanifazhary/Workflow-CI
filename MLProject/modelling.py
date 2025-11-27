@@ -25,7 +25,7 @@ print("Memulai Training...")
 # Matikan autolog
 mlflow.sklearn.autolog()
 
-with mlflow.start_run(run_name="RandomForest_Autolog"):
+with mlflow.start_run(run_name="RandomForest_Autolog") as run:
     
     # 1. Training & Hitung Waktu (Manual Metric 1)
     start_time = time.time()
