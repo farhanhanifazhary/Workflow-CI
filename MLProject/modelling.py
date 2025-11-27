@@ -23,55 +23,34 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 print("Memulai Training...")
 
 # Matikan autolog
-mlflow.sklearn.autolog(disable=True)
+mlflow.sklearn.autolog()
 
-with mlflow.start_run(run_name="RandomForest_Advance_Manual") as run:
+with mlflow.start_run(run_name="RandomForest_Autolog"):
     
-    # A. Parameter Model
-    n_estimators = 100
-    max_depth = 10
-    
-    # Log Parameter
-    mlflow.log_param("n_estimators", n_estimators)
-    mlflow.log_param("max_depth", max_depth)
-    
-    # B. Training & Hitung Waktu
+    # 1. Training & Hitung Waktu (Manual Metric 1)
     start_time = time.time()
-    
-    model = RandomForestClassifier(n_estimators=n_estimators, max_depth=max_depth, random_state=42)
+    model = RandomForestClassifier(n_estimators=100, max_depth=10, random_state=42)
     model.fit(X_train, y_train)
-    
     end_time = time.time()
-    training_duration = end_time - start_time
+    duration = end_time - start_time
     
-    # C. Prediksi & Evaluasi
+    # 2. Evaluasi Tambahan
+    # Autolog sudah mencatat Accuracy/F1 standar.
+    # Kita tambahkan metrik KHUSUS yang autolog kadang lewatkan (Syarat Advance).
     y_pred = model.predict(X_test)
     
-    acc = accuracy_score(y_test, y_pred)
-    prec = precision_score(y_test, y_pred)
-    rec = recall_score(y_test, y_pred)
-    f1 = f1_score(y_test, y_pred)
-    
-    # Hitung Specificity
+    # Hitung Specificity (Manual Metric 2)
     tn, fp, fn, tp = confusion_matrix(y_test, y_pred).ravel()
     specificity = tn / (tn + fp)
     
-    print(f"Accuracy: {acc:.4f}")
-    print(f"Time: {training_duration:.4f}s")
-    
-    # D. LOGGING KE DAGSHUB
-    # Metrik Wajib
-    mlflow.log_metric("accuracy", acc)
-    mlflow.log_metric("precision", prec)
-    mlflow.log_metric("recall", rec)
-    mlflow.log_metric("f1_score", f1)
-    
-    # Metrik Tambahan (Syarat Advance)
-    mlflow.log_metric("training_duration", training_duration)
+    print(f"Training Duration: {duration}s")
+    print(f"Specificity: {specificity}")
+
+    # 3. LOGGING TAMBAHAN (Hybrid)
+    # Autolog sudah log model & metrik dasar.
+    # Kita CUKUP log metrik tambahan saja di sini.
+    mlflow.log_metric("training_duration", duration)
     mlflow.log_metric("specificity", specificity)
-    
-    # Simpan Model
-    mlflow.sklearn.log_model(model, "model_random_forest")
 
     # Kunci untuk Docker
     run_id = run.info.run_id
