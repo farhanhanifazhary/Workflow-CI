@@ -25,7 +25,7 @@ print("Memulai Training...")
 # Matikan autolog
 mlflow.sklearn.autolog(disable=True)
 
-with mlflow.start_run(run_name="RandomForest_Advance_Manual"):
+with mlflow.start_run(run_name="RandomForest_Advance_Manual") as run:
     
     # A. Parameter Model
     n_estimators = 100
@@ -72,5 +72,10 @@ with mlflow.start_run(run_name="RandomForest_Advance_Manual"):
     
     # Simpan Model
     mlflow.sklearn.log_model(model, "model_random_forest")
+
+    # Kunci untuk Docker
+    run_id = run.info.run_id
+    with open("run_id.txt", "w") as f:
+        f.write(run_id)
     
     print("Selesai!")
