@@ -44,7 +44,7 @@ jobs:
         cd MLProject
         python modelling.py
 
-    # 6. Build Docker Image (Pakai perintah asli MLflow!)
+    # 6. Build Docker Image
     - name: Build Docker Image using MLflow
       env:
         MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
@@ -52,7 +52,6 @@ jobs:
         MLFLOW_TRACKING_PASSWORD: ${{ secrets.MLFLOW_TRACKING_PASSWORD }}
         DAGSHUB_USER_TOKEN: ${{ secrets.MLFLOW_TRACKING_PASSWORD }}
       run: |
-        cd MLProject
         
         # Baca Run ID dari file yang dibuat modelling.py
         RUN_ID=$(cat run_id.txt)
