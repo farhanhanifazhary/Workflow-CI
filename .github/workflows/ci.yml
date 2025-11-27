@@ -40,7 +40,7 @@ jobs:
         MLFLOW_TRACKING_USERNAME: ${{ secrets.MLFLOW_TRACKING_USERNAME }}
         MLFLOW_TRACKING_PASSWORD: ${{ secrets.MLFLOW_TRACKING_PASSWORD }}
       run: |
-        cd Workflow-CI/MLProject
+        cd MLProject
         python modelling.py
 
     # 6. Build Docker Image (Pakai perintah asli MLflow!)
@@ -50,7 +50,7 @@ jobs:
         MLFLOW_TRACKING_USERNAME: ${{ secrets.MLFLOW_TRACKING_USERNAME }}
         MLFLOW_TRACKING_PASSWORD: ${{ secrets.MLFLOW_TRACKING_PASSWORD }}
       run: |
-        cd Workflow-CI/MLProject
+        cd MLProject
         
         # Baca Run ID dari file yang dibuat modelling.py
         RUN_ID=$(cat run_id.txt)
