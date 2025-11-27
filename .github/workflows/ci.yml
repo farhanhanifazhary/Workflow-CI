@@ -52,10 +52,10 @@ jobs:
         MLFLOW_TRACKING_PASSWORD: ${{ secrets.MLFLOW_TRACKING_PASSWORD }}
         DAGSHUB_USER_TOKEN: ${{ secrets.MLFLOW_TRACKING_PASSWORD }}
       run: |
-        
+        cd ..
+        cd MLProject
+
         # Baca Run ID dari file yang dibuat modelling.py
-        PATH=$(pwd)
-        echo "$PATH"
         RUN_ID=$(cat run_id.txt)
         echo "Detected Run ID: $RUN_ID"
         
