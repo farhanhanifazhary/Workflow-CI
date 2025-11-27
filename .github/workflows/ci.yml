@@ -1,0 +1,69 @@
+name: CI Workflow - MLflow Build Docker
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'Workflow-CI/**' # Hanya jalan jika folder ini berubah
+
+jobs:
+  build-docker-mlflow:
+    runs-on: ubuntu-latest
+    
+    steps:
+    # 1. Checkout
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    # 2. Setup Python
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12.7'
+
+    # 3. Install Dependencies
+    # Kita butuh 'virtualenv' karena mlflow build-docker menggunakannya secara internal
+    - name: Install Dependencies
+      run: |
+        pip install mlflow==2.19.0 dagshub pandas scikit-learn virtualenv
+
+    # 4. Login ke Docker Hub
+    - name: Login to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    # 5. Jalankan Training & Generate Run ID
+    - name: Train Model
+      env:
+        MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
+        MLFLOW_TRACKING_USERNAME: ${{ secrets.MLFLOW_TRACKING_USERNAME }}
+        MLFLOW_TRACKING_PASSWORD: ${{ secrets.MLFLOW_TRACKING_PASSWORD }}
+      run: |
+        cd Workflow-CI/MLProject
+        python modelling.py
+
+    # 6. Build Docker Image (Pakai perintah asli MLflow!)
+    - name: Build Docker Image using MLflow
+      env:
+        MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
+        MLFLOW_TRACKING_USERNAME: ${{ secrets.MLFLOW_TRACKING_USERNAME }}
+        MLFLOW_TRACKING_PASSWORD: ${{ secrets.MLFLOW_TRACKING_PASSWORD }}
+      run: |
+        cd Workflow-CI/MLProject
+        
+        # Baca Run ID dari file yang dibuat modelling.py
+        RUN_ID=$(cat run_id.txt)
+        echo "Detected Run ID: $RUN_ID"
+        
+        # Perintah Sakti MLflow Build Docker
+        # -m: Lokasi model (runs:/id/nama_folder_model)
+        # -n: Nama image yang mau dibuat (username/repo:tag)
+        mlflow models build-docker -m "runs:/$RUN_ID/model_random_forest" -n "${{ secrets.DOCKER_USERNAME }}/heart-failure-model:latest"
+
+    # 7. Push ke Docker Hub
+    - name: Push Image to Docker Hub
+      run: |
+        docker push ${{ secrets.DOCKER_USERNAME }}/heart-failure-model:latest
