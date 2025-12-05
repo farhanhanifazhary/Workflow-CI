@@ -41,8 +41,7 @@ jobs:
         MLFLOW_TRACKING_PASSWORD: ${{ secrets.MLFLOW_TRACKING_PASSWORD }}
         DAGSHUB_USER_TOKEN: ${{ secrets.MLFLOW_TRACKING_PASSWORD }}
       run: |
-        cd MLProject
-        python modelling.py
+        mlflow run MLproject --env-manager=local
 
     # 6. Build Docker Image
     - name: Build Docker Image using MLflow
