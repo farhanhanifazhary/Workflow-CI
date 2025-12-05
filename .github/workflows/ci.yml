@@ -34,9 +34,9 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
 
     - name: Debug path
-        run: |
-          pwd
-          ls
+      run: |
+        pwd
+        ls
 
     # 5. Jalankan Training & Generate Run ID
     - name: Train Model
