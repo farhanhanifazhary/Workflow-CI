@@ -43,7 +43,7 @@ with mlflow.start_run(run_name="RandomForest_Autolog"):
     duration = end_time - start_time
 
     # Menyimpan run_id
-    run_id = mlflow.run.info.run_id
+    run_id = mlflow.active_run().info.run_id
 
     with open("run_id.txt", "w") as f:
         f.write(run_id)
